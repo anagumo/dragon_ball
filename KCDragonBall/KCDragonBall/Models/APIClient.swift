@@ -11,7 +11,7 @@ import Foundation
 enum APIClientError: Error {
     case malformedURL
     case noData
-    case statusCode(statusCode: Int)
+    case statusCode(statusCode: Int?)
     case decodingFailed
     case unknown
 }
@@ -38,7 +38,39 @@ struct APIClient: APIClientProtocol {
     }
     
     func jwt(request: URLRequest, completion: @escaping (Result<String, APIClientError>) -> ()) {
-        // TODO: Add definition
+        let dataTask = urlSession.dataTask(with: request) {data, response, error in
+            // Validate if there is an error
+            guard error == nil else {
+                // To be able to know the status code is necessary cast to NSError
+                guard let error = error as? NSError else {
+                    completion(.failure(.unknown))
+                    return
+                }
+                completion(.failure(.statusCode(statusCode: error.code)))
+                return
+            }
+            
+            // Handle the succes response
+            guard let data else {
+                completion(.failure(.noData))
+                return
+            }
+            
+            let response = response as? HTTPURLResponse
+            guard let response, response.statusCode == 200 else {
+                completion(.failure(.statusCode(statusCode: response?.statusCode)))
+                return
+            }
+            
+            guard let jwt = String(data: data, encoding: .utf8) else {
+                completion(.failure(.decodingFailed))
+                return
+            }
+            
+            completion(.success(jwt))
+        }
+        
+        dataTask.resume()
     }
     
     func request<T>(request: URLRequest, using: T.Type, completion: @escaping (Result<T, APIClientError>) -> ()) where T : Decodable {
