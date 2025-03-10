@@ -13,6 +13,7 @@ enum APIClientError: Error {
     case noData
     case statusCode(statusCode: Int?)
     case decodingFailed
+    case encodingFailed
     case unknown
 }
 
@@ -31,15 +32,16 @@ protocol APIClientProtocol {
 }
 
 struct APIClient: APIClientProtocol {
+    static let shared = APIClient(urlSession: .shared)
     let urlSession: URLSession
     
-    init(urlSession: URLSession) {
+    init(urlSession: URLSession = .shared) {
         self.urlSession = urlSession
     }
     
     func jwt(request: URLRequest, completion: @escaping (Result<String, APIClientError>) -> ()) {
         let dataTask = urlSession.dataTask(with: request) {data, response, error in
-            // Validate if there is an error
+            // Is good practice validate first if there is an error
             guard error == nil else {
                 // To be able to know the status code is necessary cast to NSError
                 guard let error = error as? NSError else {
@@ -50,7 +52,7 @@ struct APIClient: APIClientProtocol {
                 return
             }
             
-            // Handle the succes response
+            // If the request does not fail handle success response
             guard let data else {
                 completion(.failure(.noData))
                 return
