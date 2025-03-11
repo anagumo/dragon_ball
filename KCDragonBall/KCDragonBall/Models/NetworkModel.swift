@@ -6,7 +6,12 @@
 //
 import Foundation
 
-struct NetworkModel {
+protocol NetworkModelProtocol {
+    func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ())
+    func getHeroes(name: String, completion: @escaping (Result<[Hero], APIClientError>) -> ())
+}
+
+struct NetworkModel: NetworkModelProtocol {
     static let shared = NetworkModel(apiClient: APIClient.shared)
     private let apiClient: APIClientProtocol
     // Base url components to use them for both jwt and request
@@ -47,5 +52,33 @@ struct NetworkModel {
         urlRequest.setValue(authenticationHeader, forHTTPHeaderField: "Authorization")
         
         apiClient.jwt(request: urlRequest, completion: completion)
+    }
+    
+    func getHeroes(name: String = "", completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
+        var urlComponents = baseComponents
+        urlComponents.path = "/api/heros/all"
+        
+        guard let url = urlComponents.url else {
+            completion(.failure(.malformedURL))
+            return
+        }
+        
+        // TODO: Validate if JTW is stored
+        
+        // JSONSerialization is an old class to convert Swift objects to JSON data
+        // Ej. using a dictionary: try? JSONSerialization.data(withJSONObject: ["name": ""])
+        // JSONEncoder requieres a defined struct that represents the JSON and conforms the Encodable protocol
+        guard let encodedHero = try? JSONEncoder().encode(HeroAPIModel(name: name)) else {
+            completion(.failure(.encodingFailed))
+            return
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("Bearer {jwt}", forHTTPHeaderField: "Authorization")
+        urlRequest.httpBody = encodedHero
+        
+        apiClient.request(request: urlRequest, using: [Hero].self, completion: completion)
     }
 }

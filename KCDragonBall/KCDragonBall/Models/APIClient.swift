@@ -64,18 +64,51 @@ struct APIClient: APIClientProtocol {
                 return
             }
             
-            guard let jwt = String(data: data, encoding: .utf8) else {
+            // JWT (JSON Web Token) is a secure token used for authentication and data exchange between a client and a server
+            // KeepCoding server sends us a JWT for that endpoints that require the user to be logged in
+            guard let decodedJWT = String(data: data, encoding: .utf8) else {
                 completion(.failure(.decodingFailed))
                 return
             }
             
-            completion(.success(jwt))
+            completion(.success(decodedJWT))
         }
         
         dataTask.resume()
     }
     
     func request<T>(request: URLRequest, using: T.Type, completion: @escaping (Result<T, APIClientError>) -> ()) where T : Decodable {
-        // TODO: Add definition
+        let dataTask = urlSession.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                guard let error = error as? NSError else {
+                    completion(.failure(.unknown))
+                    return
+                }
+                completion(.failure(.statusCode(statusCode: error.code)))
+                return
+            }
+            
+            guard let data else {
+                completion(.failure(.noData))
+                return
+            }
+            
+            let response = response as? HTTPURLResponse
+            guard let response, response.statusCode == 200 else {
+                completion(.failure(.statusCode(statusCode: response?.statusCode)))
+                return
+            }
+            
+            
+            // JSONDecoder requires a defined struct that represents the entity and conforms the Decodable protocol
+            guard let decodedGeneric = try? JSONDecoder().decode(using, from: data) else {
+                completion(.failure(.decodingFailed))
+                return
+            }
+            
+            completion(.success(decodedGeneric))
+        }
+        
+        dataTask.resume()
     }
 }
