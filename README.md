@@ -5,3 +5,7 @@
 This project uses the MVC architecture and this is and aproximation of the flow:
 
 ![](Images/sequence_diagram.png)
+
+
+## API Calls
+![](Images/url_request.png) 

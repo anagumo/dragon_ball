@@ -64,6 +64,7 @@ struct NetworkModel: NetworkModelProtocol {
         }
         
         // TODO: Validate if JTW is stored
+        // Research to decide between Singleton, UserDefaults and Keychain
         
         // JSONSerialization is an old class to convert Swift objects to JSON data
         // Ej. using a dictionary: try? JSONSerialization.data(withJSONObject: ["name": ""])
@@ -75,7 +76,9 @@ struct NetworkModel: NetworkModelProtocol {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
+        // The type of data we sent to the server in the httpBody
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        // Authorize API requests using a token
         urlRequest.setValue("Bearer {jwt}", forHTTPHeaderField: "Authorization")
         urlRequest.httpBody = encodedHero
         

@@ -65,7 +65,7 @@ struct APIClient: APIClientProtocol {
             }
             
             // JWT (JSON Web Token) is a secure token used for authentication and data exchange between a client and a server
-            // KeepCoding server sends us a JWT for that endpoints that require the user to be logged in
+            // KeepCoding server sends us a JWT to authorize API requests
             guard let decodedJWT = String(data: data, encoding: .utf8) else {
                 completion(.failure(.decodingFailed))
                 return
@@ -98,7 +98,6 @@ struct APIClient: APIClientProtocol {
                 completion(.failure(.statusCode(statusCode: response?.statusCode)))
                 return
             }
-            
             
             // JSONDecoder requires a defined struct that represents the entity and conforms the Decodable protocol
             guard let decodedGeneric = try? JSONDecoder().decode(using, from: data) else {
