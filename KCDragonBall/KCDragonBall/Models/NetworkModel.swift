@@ -9,6 +9,7 @@ import Foundation
 protocol NetworkModelProtocol {
     func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ())
     func getHeroes(name: String, completion: @escaping (Result<[Hero], APIClientError>) -> ())
+    func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ())
 }
 
 struct NetworkModel: NetworkModelProtocol {
@@ -83,5 +84,29 @@ struct NetworkModel: NetworkModelProtocol {
         urlRequest.httpBody = encodedHero
         
         apiClient.request(request: urlRequest, using: [Hero].self, completion: completion)
+    }
+    
+    func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ()) {
+        var urlComponents = baseComponents
+        urlComponents.path = "/api/heros/tranformations"
+        
+        guard let url = urlComponents.url else {
+            completion(.failure(.malformedURL))
+            return
+        }
+        
+        guard let encodedTransformation = try? JSONEncoder().encode(TransformationAPIModel(id: hero.id)) else {
+            completion(.failure(.encodingFailed))
+            return
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        // Authorize API requests using a token
+        urlRequest.setValue("Bearer {jwt}", forHTTPHeaderField: "Authorization")
+        urlRequest.httpBody = encodedTransformation
+        
+        apiClient.request(request: urlRequest, using: [Transformation].self, completion: completion)
     }
 }

@@ -6,7 +6,7 @@
 //
 import Foundation
 
-/// Represent data shared between domain and API model
+/// Represents a protocol to share data between domain and API model
 protocol Nameable {
     var name: String { get }
 }
