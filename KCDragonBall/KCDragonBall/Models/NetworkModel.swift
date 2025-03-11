@@ -12,7 +12,7 @@ protocol NetworkModelProtocol {
     func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ())
 }
 
-struct NetworkModel: NetworkModelProtocol {
+final class NetworkModel: NetworkModelProtocol {
     static let shared = NetworkModel(apiClient: APIClient.shared)
     private let apiClient: APIClientProtocol
     // Base url components to use them for both jwt and request
@@ -22,6 +22,7 @@ struct NetworkModel: NetworkModelProtocol {
         urlComponents.host = "dragonball.keepcoding.education"
         return urlComponents
     }
+    private var storedJWT = ""
     
     init(apiClient: APIClientProtocol) {
         self.apiClient = apiClient
@@ -49,10 +50,19 @@ struct NetworkModel: NetworkModelProtocol {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         // Create and set authentication header
-        let authenticationHeader = "Basic \(encodedCredentials)"
-        urlRequest.setValue(authenticationHeader, forHTTPHeaderField: "Authorization")
+        let authorizationHeader = "Basic \(encodedCredentials)"
+        urlRequest.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
         
-        apiClient.jwt(request: urlRequest, completion: completion)
+        // TODO: Replace for Keychain
+        apiClient.jwt(request: urlRequest) { [weak self] result in
+            switch result {
+            case .success(let jwt):
+                self?.storedJWT = jwt
+            case .failure:
+                break
+            }
+            completion(result)
+        }
     }
     
     func getHeroes(name: String = "", completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
@@ -80,7 +90,7 @@ struct NetworkModel: NetworkModelProtocol {
         // The type of data we sent to the server in the httpBody
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         // Authorize API requests using a token
-        urlRequest.setValue("Bearer {jwt}", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("Bearer \(storedJWT)", forHTTPHeaderField: "Authorization")
         urlRequest.httpBody = encodedHero
         
         apiClient.request(request: urlRequest, using: [Hero].self, completion: completion)
@@ -104,7 +114,7 @@ struct NetworkModel: NetworkModelProtocol {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         // Authorize API requests using a token
-        urlRequest.setValue("Bearer {jwt}", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("Bearer \(storedJWT)", forHTTPHeaderField: "Authorization")
         urlRequest.httpBody = encodedTransformation
         
         apiClient.request(request: urlRequest, using: [Transformation].self, completion: completion)
