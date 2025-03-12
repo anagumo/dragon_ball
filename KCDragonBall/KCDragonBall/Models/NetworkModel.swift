@@ -29,39 +29,48 @@ final class NetworkModel: NetworkModelProtocol {
     }
     
     func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ()) {
-        var urlComponents = baseComponents
-        urlComponents.path = "/api/auth/login"
-        
-        guard let url = urlComponents.url else {
-            completion(.failure(.malformedURL))
-            return
-        }
-        
-        let loginCredentials = String(format: "%@:%@", user, password)
-        // 1. Converts the user and password to binary data
-        // 2. Basic Authentication requires Base64 encoding for credentials
-        guard let encodedCredentials = loginCredentials
-            .data(using: .utf8)?
-            .base64EncodedString() else {
-            completion(.failure(.encodingFailed))
-            return
-        }
-        
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        // Create and set authentication header
-        let authorizationHeader = "Basic \(encodedCredentials)"
-        urlRequest.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
-        
-        // TODO: Replace for Keychain
-        apiClient.jwt(request: urlRequest) { [weak self] result in
-            switch result {
-            case .success(let jwt):
-                self?.storedJWT = jwt
-            case .failure:
-                break
+        do {
+            try RegexLint.validate(data: user, matchWith: .email)
+            try RegexLint.validate(data: password, matchWith: .password)
+            
+            var urlComponents = baseComponents
+            urlComponents.path = "/api/auth/login"
+            
+            guard let url = urlComponents.url else {
+                completion(.failure(.malformedURL))
+                return
             }
-            completion(result)
+            
+            let loginCredentials = String(format: "%@:%@", user, password)
+            // 1. Converts the user and password to binary data
+            // 2. Basic Authentication requires Base64 encoding for credentials
+            guard let encodedCredentials = loginCredentials
+                .data(using: .utf8)?
+                .base64EncodedString() else {
+                completion(.failure(.encodingFailed))
+                return
+            }
+            
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = "POST"
+            // Create and set authentication header
+            let authorizationHeader = "Basic \(encodedCredentials)"
+            urlRequest.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
+            
+            // TODO: Replace for Keychain
+            apiClient.jwt(request: urlRequest) { [weak self] result in
+                switch result {
+                case .success(let jwt):
+                    self?.storedJWT = jwt
+                case .failure:
+                    break
+                }
+                completion(result)
+            }
+        } catch let apiClientError as APIClientError {
+            completion(.failure(apiClientError))
+        } catch {
+            completion(.failure(APIClientError.unknown))
         }
     }
     

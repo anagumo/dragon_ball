@@ -7,16 +7,6 @@
 
 import Foundation
 
-/// Representation of an API client error
-enum APIClientError: Error {
-    case malformedURL
-    case noData
-    case statusCode(statusCode: Int?)
-    case decodingFailed
-    case encodingFailed
-    case unknown
-}
-
 protocol APIClientProtocol {
     /// Function to get the JWT from the server
     /// - Parameters:

@@ -12,6 +12,8 @@ class LoginViewController: UIViewController {
     // MARK: UI Components
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
+    @IBOutlet var userErrorLabel: UILabel!
+    @IBOutlet var passwordErrorLabel: UILabel!
     
     private var networkModel: NetworkModelProtocol
     
@@ -25,32 +27,31 @@ class LoginViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     // MARK: Oulet Actions
     @IBAction func login(_ sender: UIButton) {
-        guard let emailText = emailTextField.text, !emailText.isEmpty else {
-            // TODO: Add Regex linter
-            Logger.debug.error("Empty user")
-            return
-        }
+        userErrorLabel.isHidden = true
+        passwordErrorLabel.isHidden = true
         
-        guard let passwordText = passwordTextField.text, !passwordText.isEmpty  else {
-            // TODO: Add Regex linter
-            Logger.debug.error("Empty password")
-            return
-        }
-        
-        networkModel.jwt(user: emailText, password: passwordText) { result in
+        networkModel.jwt(user: emailTextField.text ?? "", password: passwordTextField.text ?? "") { [weak self] result in
             switch result {
             case .success:
+                Logger.debug.log("Logged in!")
                 // TODO: Continue with the next screen
-                Logger.debug.log("Logged!")
-            case .failure(let error):
-                // TODO: Handle errors
-                Logger.debug.error("\(error)")
+            case let .failure(error):
+                switch error {
+                case .emailFormat:
+                    DispatchQueue.main.async {
+                        self?.userErrorLabel.text = error.message
+                        self?.userErrorLabel.isHidden = false
+                    }
+                case .passwordFormat:
+                    DispatchQueue.main.async {
+                        self?.passwordErrorLabel.text = error.message
+                        self?.passwordErrorLabel.isHidden = false
+                    }
+                default:
+                    Logger.debug.error("\(error.message)")
+                }
             }
         }
     }
