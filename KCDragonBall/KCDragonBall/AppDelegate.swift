@@ -16,10 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().tintColor = .dbBlack
         UITabBar.appearance().unselectedItemTintColor = .dbBlack
         
-        UINavigationBar.appearance().tintColor = .white
+        UINavigationBar.appearance().tintColor = .dbBlack
         UINavigationBar.appearance().barTintColor = .dbOrange
         UINavigationBar.appearance().titleTextAttributes = [
-            .foregroundColor: UIColor.white
+            .foregroundColor: UIColor.dbBlack
         ]
         return true
     }

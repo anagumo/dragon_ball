@@ -35,6 +35,7 @@ final class HerosCollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Heros"
         configureCollectionView()
         getHeros()
     }
