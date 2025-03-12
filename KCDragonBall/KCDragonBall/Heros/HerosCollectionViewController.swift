@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import OSLog
 
 enum HerosSection {
     case heros
@@ -17,9 +18,11 @@ final class HerosCollectionViewController: UICollectionViewController {
     typealias Snapshot = NSDiffableDataSourceSnapshot<HerosSection, Hero>
     private var dataSource: DataSource?
     private let heros: [Hero] = []
+    private let networkModel: NetworkModelProtocol
     
     // MARK: Lifecycle
-    init() {
+    init(networwModel: NetworkModelProtocol) {
+        self.networkModel = networwModel
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         flowLayout.scrollDirection = .vertical
@@ -33,6 +36,7 @@ final class HerosCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
+        getHeros()
     }
     
     // MARK: CollectionView Configuration
@@ -50,14 +54,26 @@ final class HerosCollectionViewController: UICollectionViewController {
         })
         
         collectionView.dataSource = dataSource
-        applySnapshot()
     }
     
-    private func applySnapshot() {
+    private func applySnapshot(heros: [Hero]) {
         var snapshot = Snapshot()
         snapshot.appendSections([.heros])
         snapshot.appendItems(heros)
         dataSource?.apply(snapshot)
+    }
+    
+    private func getHeros() {
+        networkModel.getHeroes { result in
+            switch result {
+            case .success(let heros):
+                DispatchQueue.main.async {
+                    self.applySnapshot(heros: heros)
+                }
+            case .failure(let error):
+                Logger.debug.error("\(error.message)")
+            }
+        }
     }
 }
 
@@ -69,6 +85,6 @@ extension HerosCollectionViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let numberCollumn: CGFloat = 2
         let itemWidth = (collectionView.frame.size.width - 32) / numberCollumn
-        return CGSize(width: itemWidth, height: 200)
+        return CGSize(width: itemWidth, height: 220)
     }
 }

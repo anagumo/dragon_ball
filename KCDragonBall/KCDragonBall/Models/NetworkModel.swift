@@ -12,6 +12,12 @@ protocol NetworkModelProtocol {
     func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ())
 }
 
+extension NetworkModelProtocol {
+    func getHeroes(name: String = "", completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
+        return getHeroes(name: name, completion: completion)
+    }
+}
+
 final class NetworkModel: NetworkModelProtocol {
     static let shared = NetworkModel(apiClient: APIClient.shared)
     private let apiClient: APIClientProtocol

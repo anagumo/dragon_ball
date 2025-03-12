@@ -81,7 +81,7 @@ extension LoginViewController {
     private func configureTabBarController() {
         let tabBarController = UITabBarController()
         
-        let herosCollectionViewController = HerosCollectionViewController()
+        let herosCollectionViewController = HerosCollectionViewController(networwModel: networkModel)
         let herosNavigationController = UINavigationController(rootViewController: herosCollectionViewController)
         herosNavigationController.tabBarItem = UITabBarItem(
             title: "Heros",
