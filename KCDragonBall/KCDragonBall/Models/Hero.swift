@@ -11,7 +11,7 @@ protocol Nameable {
     var name: String { get }
 }
 /// Represents a domain model
-struct Hero: Nameable, Decodable {
+struct Hero: Nameable, Decodable, Hashable {
     let id: String
     let favorite: Bool
     let name: String

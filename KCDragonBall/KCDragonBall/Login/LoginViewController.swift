@@ -52,7 +52,6 @@ class LoginViewController: UIViewController {
     }
     
     private func onLoginSuccess() {
-        // TODO: Continue with the next screen
         Logger.debug.log("Logged in!")
         
         DispatchQueue.main.async {
@@ -82,7 +81,7 @@ extension LoginViewController {
     private func configureTabBarController() {
         let tabBarController = UITabBarController()
         
-        let herosCollectionViewController = UIViewController()
+        let herosCollectionViewController = HerosCollectionViewController()
         let herosNavigationController = UINavigationController(rootViewController: herosCollectionViewController)
         herosNavigationController.tabBarItem = UITabBarItem(
             title: "Heros",
