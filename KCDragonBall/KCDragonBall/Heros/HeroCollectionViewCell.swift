@@ -21,6 +21,8 @@ class HeroCollectionViewCell: UICollectionViewCell {
         favoriteImageView.image = favoriteImage
         favoriteImageView.tintColor = .dbOrange
         photoImageView.layer.backgroundColor = UIColor.systemGray6.cgColor
+        photoImageView.setImage(stringURL: hero.photo)
+        photoImageView.contentMode = .scaleAspectFill
         photoImageView.layer.cornerRadius = 8
         nameLabel.text = hero.name
     }
