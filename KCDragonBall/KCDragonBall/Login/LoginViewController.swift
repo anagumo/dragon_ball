@@ -29,6 +29,8 @@ class LoginViewController: UIViewController {
     
     // MARK: Oulet Actions
     @IBAction func login(_ sender: UIButton) {
+        sender.configuration?.showsActivityIndicator = true
+        
         userErrorLabel.isHidden = true
         passwordErrorLabel.isHidden = true
         
@@ -36,6 +38,10 @@ class LoginViewController: UIViewController {
             user: emailTextField.text ?? "",
             password: passwordTextField.text ?? ""
         ) { [weak self] result in
+            DispatchQueue.main.async {
+                sender.configuration?.showsActivityIndicator = false
+            }
+            
             switch result {
             case .success:
                 self?.onLoginSuccess()
