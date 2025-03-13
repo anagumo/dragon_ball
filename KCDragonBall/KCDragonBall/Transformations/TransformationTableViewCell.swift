@@ -15,16 +15,13 @@ final class TransformationTableViewCell: UITableViewCell {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var readMoreButton: UIButton!
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func awakeFromNib() {
+        super.awakeFromNib()
         customizeButtons()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func configure(with transformation: Transformation) {
+        photoImageView.layer.backgroundColor = UIColor.systemGray6.cgColor
         photoImageView.setImage(stringURL: transformation.photo)
         photoImageView.layer.cornerRadius = 8
         photoImageView.contentMode = .scaleAspectFill
@@ -37,14 +34,21 @@ final class TransformationTableViewCell: UITableViewCell {
     }
 }
 
+// MARK: UI Customization
 extension TransformationTableViewCell {
     func customizeButtons() {
-        var readMoreConfiguration = UIButton.Configuration.plain()
+        var readMoreConfiguration = UIButton.Configuration.filled()
+        readMoreConfiguration.cornerStyle = .capsule
+        readMoreConfiguration.baseBackgroundColor = .dbOrange
+        readMoreConfiguration.image = UIImage(systemName: "book.closed.circle.fill")
+        readMoreConfiguration.imagePlacement = .leading
+        readMoreConfiguration.imagePadding = 4
+        readMoreConfiguration.baseForegroundColor = .dbBlack
         readMoreConfiguration.attributedTitle = AttributedString(
-            "Read More",
+            "Read",
             attributes: AttributeContainer([
-                .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
-                .foregroundColor: UIColor.dbOrange
+                .font: UIFont.systemFont(ofSize: 15, weight: .semibold),
+                .foregroundColor: UIColor.dbBlack
             ]))
         readMoreButton.configuration = readMoreConfiguration
     }

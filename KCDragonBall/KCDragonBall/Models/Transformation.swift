@@ -12,7 +12,7 @@ protocol TransformationIdentifiable {
 }
 
 /// Represents a domain model
-struct Transformation: TransformationIdentifiable, Codable {
+struct Transformation: TransformationIdentifiable, Codable, Hashable {
     let name: String
     let description: String
     let photo: String

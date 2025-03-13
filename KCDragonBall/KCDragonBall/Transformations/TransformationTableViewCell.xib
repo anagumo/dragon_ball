@@ -17,22 +17,22 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="yHF-fL-4or" userLabel="Content Stack View">
-                        <rect key="frame" x="8" y="8" width="426" height="242"/>
+                        <rect key="frame" x="8" y="8.0000000000000142" width="426" height="255.33333333333337"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Pxc-8k-MBU" userLabel="Photo Image View">
                                 <rect key="frame" x="0.0" y="0.0" width="426" height="213"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1pJ-UH-ops" userLabel="Title Stack View">
-                                <rect key="frame" x="0.0" y="221" width="426" height="21"/>
+                                <rect key="frame" x="0.0" y="221" width="426" height="34.333333333333343"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QxV-gZ-E5I" userLabel="Name Label">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="21"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="34.333333333333336"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xMl-xp-1vu" userLabel="Read More Button">
-                                        <rect key="frame" x="351" y="0.0" width="75" height="21"/>
+                                        <rect key="frame" x="351" y="0.0" width="75" height="34.333333333333336"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                         <connections>
@@ -48,7 +48,6 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="yHF-fL-4or" secondAttribute="bottom" constant="8" id="8zz-av-rO4"/>
                     <constraint firstItem="yHF-fL-4or" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="R5h-F8-QXF"/>
                     <constraint firstItem="yHF-fL-4or" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="qzY-iz-Kke"/>
                     <constraint firstAttribute="trailing" secondItem="yHF-fL-4or" secondAttribute="trailing" constant="8" id="vrn-MM-SDK"/>

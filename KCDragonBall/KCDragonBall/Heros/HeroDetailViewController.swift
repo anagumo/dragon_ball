@@ -70,7 +70,10 @@ final class HeroDetailViewController: UIViewController {
     
     // MARK: Oulet Actions
     @IBAction func transformationsButtonTapped(_ sender: Any) {
-        let transformationsTableViewController = TransformationsTableViewController()
+        let transformationsTableViewController = TransformationsTableViewController(
+            networkModel: networkModel,
+            transformations: transformations
+        )
         show(transformationsTableViewController, sender: self)
     }
 }
