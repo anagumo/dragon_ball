@@ -5,6 +5,7 @@
 //  Created by Ariana Rodríguez on 10/03/25.
 //
 import Foundation
+import UIKit
 
 /// Represents a protocol to share data between domain and API model
 protocol Nameable {
@@ -22,4 +23,11 @@ struct Hero: Nameable, Decodable, Hashable {
 /// Represents an API Model
 struct HeroAPIModel: Nameable, Encodable {
     let name: String
+}
+
+extension Hero {
+    
+    func getFavoriteImage() -> UIImage? {
+        UIImage(systemName: favorite ? "heart.fill" : "heart")
+    }
 }

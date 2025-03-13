@@ -38,6 +38,10 @@ final class HeroDetailViewController: UIViewController {
         getTransformations()
     }
     
+    @objc func favoriteBarButtonItemTapped(_ sender: UIBarButtonItem) {
+        // TODO: Call /api/data/herolike
+    }
+    
     private func configureHero() {
         photoImageView.setImage(stringURL: hero.photo)
         photoImageView.contentMode = .scaleAspectFill
@@ -74,6 +78,13 @@ final class HeroDetailViewController: UIViewController {
 extension HeroDetailViewController {
     // MARK: UI Components customization
     private func customizeButtons() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: hero.getFavoriteImage(),
+            style: .plain,
+            target: self,
+            action: #selector(favoriteBarButtonItemTapped)
+        )
+        
         var transformationConfiguration = UIButton.Configuration.filled()
         transformationConfiguration.cornerStyle = .capsule
         transformationConfiguration.baseBackgroundColor = .dbOrange
