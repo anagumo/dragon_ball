@@ -15,6 +15,7 @@ class HeroCollectionViewCell: UICollectionViewCell {
     @IBOutlet var nameLabel: UILabel!
     
     func configure(with hero: Hero) {
+        // TODO: Call /api/data/herolike
         favoriteImageView.image = hero.getFavoriteImage()
         favoriteImageView.tintColor = .dbOrange
         photoImageView.layer.backgroundColor = UIColor.systemGray6.cgColor
