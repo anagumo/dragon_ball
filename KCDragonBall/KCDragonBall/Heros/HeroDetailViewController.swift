@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import OSLog
 
 final class HeroDetailViewController: UIViewController {
     // MARK: UI Components
@@ -15,10 +16,13 @@ final class HeroDetailViewController: UIViewController {
     @IBOutlet var descriptionLabel: UILabel!
     
     // MARK: DataSource
+    private var networkModel: NetworkModelProtocol
     private let hero: Hero
+    private var transformations: [Transformation] = []
     
     // MARK: Lifecycle
-    init(hero: Hero) {
+    init(networkModel: NetworkModelProtocol, hero: Hero) {
+        self.networkModel = networkModel
         self.hero = hero
         super.init(nibName: nil, bundle: nil)
     }
@@ -29,11 +33,41 @@ final class HeroDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        customizeButtons()
+        configureHero()
+        getTransformations()
+    }
+    
+    private func configureHero() {
         photoImageView.setImage(stringURL: hero.photo)
         photoImageView.contentMode = .scaleAspectFill
         nameLabel.text = hero.name
         descriptionLabel.text = hero.description
-        customizeButtons()
+    }
+    
+    private func getTransformations() {
+        networkModel.getTransformations(for: hero) { [weak self] result in
+            switch result {
+            case let .success(transformations):
+                guard !transformations.isEmpty else {
+                    let heroName = self?.hero.name ?? ""
+                    Logger.debug.error("Transformations for \(heroName) not found")
+                    return
+                }
+                self?.transformations = transformations
+                DispatchQueue.main.async {
+                    self?.transformationsButton.isHidden = false
+                }
+            case let .failure(error):
+                Logger.debug.error("\(error.message)")
+            }
+        }
+    }
+    
+    // MARK: Oulet Actions
+    @IBAction func transformationsButtonTapped(_ sender: Any) {
+        let transformationsTableViewController = TransformationsTableViewController()
+        show(transformationsTableViewController, sender: self)
     }
 }
 

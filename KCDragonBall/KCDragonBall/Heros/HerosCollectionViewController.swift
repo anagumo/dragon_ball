@@ -96,7 +96,10 @@ extension HerosCollectionViewController: UICollectionViewDelegateFlowLayout {
             return
         }
         
-        let heroDetailViewController = HeroDetailViewController(hero: hero)
+        let heroDetailViewController = HeroDetailViewController(
+            networkModel: networkModel,
+            hero: hero
+        )
         show(heroDetailViewController, sender: self)
     }
 }
