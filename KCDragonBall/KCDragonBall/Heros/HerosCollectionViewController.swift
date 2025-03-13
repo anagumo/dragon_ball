@@ -55,6 +55,7 @@ final class HerosCollectionViewController: UICollectionViewController {
         })
         
         collectionView.dataSource = dataSource
+        collectionView.delegate = self
     }
     
     private func applySnapshot(heros: [Hero]) {
@@ -87,5 +88,15 @@ extension HerosCollectionViewController: UICollectionViewDelegateFlowLayout {
         let numberCollumn: CGFloat = 2
         let itemWidth = (collectionView.frame.size.width - 32) / numberCollumn
         return CGSize(width: itemWidth, height: 220)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let hero = dataSource?.itemIdentifier(for: indexPath) as? Hero else {
+            Logger.debug.error("No Hero item found in DataSource")
+            return
+        }
+        
+        let heroDetailViewController = HeroDetailViewController(hero: hero)
+        show(heroDetailViewController, sender: self)
     }
 }
