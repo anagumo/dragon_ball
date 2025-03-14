@@ -27,6 +27,10 @@ class LoginViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
     // MARK: Oulet Actions
     @IBAction func login(_ sender: UIButton) {
         sender.configuration?.showsActivityIndicator = true
@@ -55,7 +59,7 @@ class LoginViewController: UIViewController {
         Logger.debug.log("Logged in!")
         
         DispatchQueue.main.async {
-            self.configureTabBarController()
+            self.configureMainController()
         }
     }
     
@@ -78,27 +82,13 @@ class LoginViewController: UIViewController {
 }
 
 extension LoginViewController {
-    private func configureTabBarController() {
-        let tabBarController = UITabBarController()
-        
+    private func configureMainController() {
         let herosCollectionViewController = HerosCollectionViewController(networwModel: networkModel)
         let herosNavigationController = UINavigationController(rootViewController: herosCollectionViewController)
-        herosNavigationController.tabBarItem = UITabBarItem(
-            title: "Heros",
-            image: UIImage(systemName: "gamecontroller"),
-            selectedImage: UIImage(systemName: "gamecontroller.fill"))
-        let favoritesTableViewControler = UIViewController()
-        let favoritesNavigationController = UINavigationController(rootViewController: favoritesTableViewControler)
-        favoritesNavigationController.tabBarItem = UITabBarItem(
-            title: "Favorites",
-            image: UIImage(systemName: "heart.circle"),
-            selectedImage: UIImage(systemName: "heart.circle.fill"))
-        
-        tabBarController.viewControllers = [herosNavigationController, favoritesNavigationController]
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else {
             Logger.debug.error("SceneDelegate is not properly configured")
             return
         }
-        sceneDelegate.window?.rootViewController = tabBarController
+        sceneDelegate.window?.rootViewController = herosNavigationController
     }
 }
