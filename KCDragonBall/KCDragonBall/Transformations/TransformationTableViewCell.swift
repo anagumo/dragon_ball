@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TransformationTableViewCellProtocol: AnyObject {
+    func readButtonTapped(transformation: Transformation)
+}
+
 final class TransformationTableViewCell: UITableViewCell {
     static let identifier = String(describing: TransformationTableViewCell.self)
     
@@ -15,12 +19,16 @@ final class TransformationTableViewCell: UITableViewCell {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var readMoreButton: UIButton!
     
+    private var transformation: Transformation?
+    weak var transformationTableViewCellDelegate: TransformationTableViewCellProtocol?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         customizeButtons()
     }
     
     func configure(with transformation: Transformation) {
+        self.transformation = transformation
         photoImageView.layer.backgroundColor = UIColor.systemGray6.cgColor
         photoImageView.setImage(stringURL: transformation.photo)
         photoImageView.layer.cornerRadius = 8
@@ -29,8 +37,11 @@ final class TransformationTableViewCell: UITableViewCell {
     }
     
     // MARK: UI Actions
-    @IBAction func readMoreButtonTapped(_ sender: UIButton) {
-        // TODO: Present Transformation Detail Modally
+    @IBAction func readButtonTapped(_ sender: UIButton) {
+        guard let transformation else {
+            return
+        }
+        transformationTableViewCellDelegate?.readButtonTapped(transformation: transformation)
     }
 }
 

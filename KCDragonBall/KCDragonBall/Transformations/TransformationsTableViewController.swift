@@ -54,6 +54,7 @@ final class TransformationsTableViewController: UITableViewController {
                 return UITableViewCell()
             }
             cell.configure(with: transformation)
+            cell.transformationTableViewCellDelegate = self
             return cell
         })
         
@@ -74,5 +75,16 @@ extension TransformationsTableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         250
+    }
+}
+
+// MARK: TableViewCell Delegate
+extension TransformationsTableViewController: TransformationTableViewCellProtocol {
+    
+    func readButtonTapped(transformation: Transformation) {
+        let transformationDetailViewController = TransformationDetailViewController(
+            transformation: transformation
+        )
+        present(transformationDetailViewController, animated: true)
     }
 }
