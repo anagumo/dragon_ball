@@ -66,7 +66,7 @@ final class HerosCollectionViewController: UICollectionViewController {
     }
     
     private func getHeros() {
-        networkModel.getHeroes { result in
+        networkModel.getHeros { result in
             switch result {
             case .success(let heros):
                 DispatchQueue.main.async {

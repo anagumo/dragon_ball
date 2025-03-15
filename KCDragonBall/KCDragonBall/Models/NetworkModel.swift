@@ -8,14 +8,10 @@ import Foundation
 
 protocol NetworkModelProtocol {
     func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ())
-    func getHeroes(name: String, completion: @escaping (Result<[Hero], APIClientError>) -> ())
+    func getHeros(completion: @escaping (Result<[Hero], APIClientError>) -> ())
     func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ())
-}
-
-extension NetworkModelProtocol {
-    func getHeroes(name: String = "", completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
-        return getHeroes(name: name, completion: completion)
-    }
+    var heroJSONObject: [String:Any] { get set }
+    var storedJWT: String { get set }
 }
 
 final class NetworkModel: NetworkModelProtocol {
@@ -28,10 +24,12 @@ final class NetworkModel: NetworkModelProtocol {
         urlComponents.host = "dragonball.keepcoding.education"
         return urlComponents
     }
-    private var storedJWT = ""
+    internal var heroJSONObject: [String:Any]
+    internal var storedJWT = ""
     
     init(apiClient: APIClientProtocol) {
         self.apiClient = apiClient
+        heroJSONObject = ["name":""]
     }
     
     func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ()) {
@@ -80,7 +78,7 @@ final class NetworkModel: NetworkModelProtocol {
         }
     }
     
-    func getHeroes(name: String = "", completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
+    func getHeros(completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
         var urlComponents = baseComponents
         urlComponents.path = "/api/heros/all"
         
@@ -95,7 +93,9 @@ final class NetworkModel: NetworkModelProtocol {
         // JSONSerialization is an old class to convert Swift objects to JSON data
         // Ej. using a dictionary: try? JSONSerialization.data(withJSONObject: ["name": ""])
         // JSONEncoder requieres a defined struct that represents the JSON and conforms the Encodable protocol
-        guard let encodedHero = try? JSONEncoder().encode(HeroAPIModel(name: name)) else {
+        guard JSONSerialization.isValidJSONObject(heroJSONObject),
+              let encodedHero = try? JSONSerialization.data(withJSONObject: heroJSONObject)
+        else {
             completion(.failure(.encodingFailed))
             return
         }

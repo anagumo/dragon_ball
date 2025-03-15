@@ -10,4 +10,5 @@ import OSLog
 
 extension Logger {
     static let debug = Logger(subsystem: "KCDragonBall", category: "Debug")
+    static let tests = Logger(subsystem: "KCDragonBall", category: "Tests")
 }
