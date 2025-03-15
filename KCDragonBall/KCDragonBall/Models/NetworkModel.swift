@@ -10,6 +10,7 @@ protocol NetworkModelProtocol {
     func jwt(user: String, password: String, completion: @escaping (Result<String, APIClientError>) -> ())
     func getHeros(completion: @escaping (Result<[Hero], APIClientError>) -> ())
     func getTransformations(for hero: Hero, completion: @escaping (Result<[Transformation], APIClientError>) -> ())
+    func createURL(path: String) -> URL?
     var heroJSONObject: [String:Any] { get set }
     var storedJWT: String { get set }
 }
@@ -37,10 +38,7 @@ final class NetworkModel: NetworkModelProtocol {
             try RegexLint.validate(data: user, matchWith: .email)
             try RegexLint.validate(data: password, matchWith: .password)
             
-            var urlComponents = baseComponents
-            urlComponents.path = "/api/auth/login"
-            
-            guard let url = urlComponents.url else {
+            guard let url = createURL(path: "/api/auth/login") else {
                 completion(.failure(.malformedURL))
                 return
             }
@@ -79,10 +77,7 @@ final class NetworkModel: NetworkModelProtocol {
     }
     
     func getHeros(completion: @escaping (Result<[Hero], APIClientError>) -> ()) {
-        var urlComponents = baseComponents
-        urlComponents.path = "/api/heros/all"
-        
-        guard let url = urlComponents.url else {
+        guard let url = createURL(path: "/api/heros/all") else {
             completion(.failure(.malformedURL))
             return
         }
@@ -133,5 +128,11 @@ final class NetworkModel: NetworkModelProtocol {
         urlRequest.httpBody = encodedTransformation
         
         apiClient.request(request: urlRequest, using: [Transformation].self, completion: completion)
+    }
+    
+    func createURL(path: String) -> URL? {
+        var urlComponents = baseComponents
+        urlComponents.path = path
+        return urlComponents.url
     }
 }

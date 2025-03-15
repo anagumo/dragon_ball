@@ -126,6 +126,17 @@ final class NetworkModelTests: XCTestCase {
     }
     
     // MARK: Heros Failure Cases
+    func test_getHeros_malformedURL_failure() {
+        // Given
+        let path = "inval!d_path"
+        
+        // When
+        let url = sut.createURL(path: path)
+        
+        // Then
+        XCTAssertEqual(url?.absoluteString, nil)
+    }
+    
     func test_getHeros_encoding_failure() {
         // Given
         sut.heroJSONObject = [
@@ -167,5 +178,21 @@ final class NetworkModelTests: XCTestCase {
         } else {
             Logger.tests.log("Get Heros Empty Failed")
         }
+    }
+    
+    // Transformations Success Cases
+    func test_transformations_success() {
+        // Given
+        let successResult = Result<[Transformation], APIClientError>.success(SuccessResonsesMock.trasformations)
+        apiClientMock.receiveTransformationResult = successResult
+        
+        // When
+        var receivedResult: Result<[Transformation], APIClientError>?
+        sut.getTransformations(for: SuccessResonsesMock.heros.first!) { result in
+            receivedResult = result
+        }
+        
+        // Then
+        XCTAssertEqual(successResult, receivedResult)
     }
 }

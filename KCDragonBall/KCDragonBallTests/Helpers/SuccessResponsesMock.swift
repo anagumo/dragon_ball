@@ -31,4 +31,24 @@ enum SuccessResonsesMock {
              description: "",
              photo: "")
     ]
+    
+    static let trasformations = [
+        Transformation(
+            name: "2. Kaio-Ken",
+            description: "La técnica de Kaio-sama permitía a Goku...",
+            photo: "https://areajugones.sport.es/wp-content/uploads/2017/05/Goku_Kaio-Ken_Coolers_Revenge.jpg",
+            id: "9D6012A0-B6A9-4BAB-854D-67904E96CE01"
+        ),
+        Transformation(
+            name: "8. Super Kaio-ken",
+            description: "En la lucha de Goku contra Paikuhan...",
+            photo: "https://areajugones.sport.es/wp-content/uploads/2021/05/kaioken.jpg.webp",
+            id: "D13A40E5-4418-4223-9CE6-D2F9A28EBE44"
+        ),
+        Transformation(
+            name: "12. Super Saiyan Blue",
+            description: "El Super Saiyan Blue es el resultado de un Super Saiyan God...",
+            photo: "https://areajugones.sport.es/wp-content/uploads/2015/10/super_saiyan_god_super_saiyan__ssgss__goku_by_mikkkiwarrior3-d8wv7hx.jpg",
+            id: "EE4DEC64-1B2D-47C1-A8EA-3208894A57A3")
+    ]
 }
