@@ -17,12 +17,72 @@ final class NetworkModelTests: XCTestCase {
         super.setUp()
         apiClientMock = APIClientMock()
         sut = NetworkModel(apiClient: apiClientMock)
-        sut.storedJWT = "{header}.{payload}.{signature}"
+        sut.storedJWT = "{jwt}"
     }
     
     override func tearDown() {
         sut = nil
         super.tearDown()
+    }
+    
+    // MARK: Login Success Cases
+    func test_login_URL() {
+        // Given
+        let successResult = Result<String, APIClientError>.success("{jwt}")
+        apiClientMock.receiveJWTResult = successResult
+        
+        // When
+        var receivedResult: Result<String, APIClientError>?
+        sut.jwt(
+            user: "regularuser@keepcoding.es",
+            password: "Regularuser1"
+        ) { result in
+            receivedResult = result
+        }
+        
+        // Then
+        XCTAssertEqual(
+            apiClientMock.receiveJWTRequest?.url,
+            URL(string: "https://dragonball.keepcoding.education/api/auth/login")
+        )
+        XCTAssertNotNil(receivedResult, "Request Succeeded")
+    }
+    
+    func test_login_success() {
+        // Given
+        let successResult = Result<String, APIClientError>.success("{jwt}")
+        apiClientMock.receiveJWTResult = successResult
+        
+        // When
+        var receivedResult: Result<String, APIClientError>?
+        sut.jwt(
+            user: "regularuser@keepcoding.es",
+            password: "Regularuser1"
+        ) { result in
+            receivedResult = result
+        }
+        
+        // Then
+        XCTAssertEqual(successResult, receivedResult)
+    }
+    
+    // MARK: Login Failure Cases
+    func test_login_email_format_failure() {
+        // Given
+        let successResult = Result<String, APIClientError>.success("{jwt}")
+        apiClientMock.receiveJWTResult = successResult
+        
+        // When
+        var receivedResult: Result<String, APIClientError>?
+        sut.jwt(
+            user: "regularuser.es",
+            password: "Regularuser1"
+        ) { result in
+            receivedResult = result
+        }
+        
+        // Then
+        XCTAssertEqual(receivedResult, .failure(.emailFormat))
     }
     
     // MARK: Heros Success Cases
@@ -66,8 +126,6 @@ final class NetworkModelTests: XCTestCase {
     }
     
     // MARK: Heros Failure Cases
-    
-    
     func test_getHeros_encoding_failure() {
         // Given
         sut.heroJSONObject = [
