@@ -12,7 +12,7 @@ An app inspired on the iconic anime Dragon Ball Z
 ## Screens
 | LaunchScreen | Login |
 |--------|------|
-| <img src="Images/launchScreen.mp4" width="250"/>  | <img src="Images/login.mp4" width="250"/> |
+| <img src="Images/launchScreen.gif" width="250"/>  | <img src="Images/login.gif" width="250"/> |
 
 | Heros | Transformations |
 |--------|------|
