@@ -12,11 +12,15 @@ An app inspired on the iconic anime Dragon Ball Z
 ## Screens
 | LaunchScreen | Login |
 |--------|------|
-| <img src="Images/launchScreen.gif" width="250"/>  | <img src="Images/login.gif" width="250"/> |
+| <img src="Images/launchScreen.png" width="250"/>  | <img src="Images/login.gif" width="250"/> |
 
 | Heros | Transformations |
 |--------|------|
 | <img src="Images/heroDetail.gif" width="250"/>  | <img src="Images/transformations.gif" width="250"/> |
+
+| Login Error | Favorite WIP |
+|--------|------|
+| <img src="Images/loginAlert.png" width="250"/>  | <img src="Images/favoriteAlert.png" width="250"/> |
 
 ## MVC Architecture
 

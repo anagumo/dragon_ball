@@ -77,6 +77,21 @@ class LoginViewController: UIViewController {
             }
         default:
             Logger.debug.error("\(apiClientError.message)")
+            DispatchQueue.main.async {
+                let uiAlertController = UIAlertController(
+                    title: "Error",
+                    message: apiClientError.message,
+                    preferredStyle: .alert)
+                
+                uiAlertController.addAction(
+                    UIAlertAction(
+                        title: "OK",
+                        style: .default
+                    )
+                )
+                
+                self.present(uiAlertController, animated: true)
+            }
         }
     }
 }

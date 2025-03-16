@@ -40,6 +40,20 @@ final class HeroDetailViewController: UIViewController {
     
     @objc func favoriteBarButtonItemTapped(_ sender: UIBarButtonItem) {
         // TODO: Call /api/data/herolike
+        Logger.debug.log("Favorite Hero tapped")
+        let uiAlertController = UIAlertController(
+            title: "Unavailable Feature",
+            message: "Call to /api/data/herolike in Postman to test the favorite state",
+            preferredStyle: .alert)
+        
+        uiAlertController.addAction(
+            UIAlertAction(
+                title: "OK",
+                style: .default
+            )
+        )
+        
+        present(uiAlertController, animated: true)
     }
     
     private func configureHero() {

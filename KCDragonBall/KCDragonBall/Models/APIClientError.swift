@@ -48,21 +48,25 @@ enum APIClientError: Error, Equatable {
     var message: String {
         switch self {
         case .malformedURL:
-            "Malformed URL"
+            return "Malformed URL"
         case .noData:
-            "No Data"
+            return "No Data"
         case .statusCode(let statusCode):
-            "Error Code: \(String(describing: statusCode))"
+            if statusCode == 401 {
+                return "Wrong email or password"
+            } else {
+                return String(describing: statusCode)
+            }
         case .decodingFailed:
-            "Decoding Failed"
+            return "Decoding Failed"
         case .encodingFailed:
-            "Encoding Failed"
+            return "Encoding Failed"
         case .emailFormat:
-            "Invalid email format"
+            return "Invalid email format"
         case .passwordFormat:
-            "The password must have at least 8 characters"
+            return "The password must have at least 8 characters"
         case .unknown:
-            "Unknown error"
+            return "Unknown error"
         }
     }
 }
